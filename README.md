@@ -43,7 +43,7 @@ const element = React.createElement(
 ```
 
 
-### RefForwarding
+## RefForwarding
 useful for complicated relations between more components divided by more layers of elements and components:
 - Managing focus, text selection, or media playback.
 - Triggering imperative animations.
@@ -70,7 +70,7 @@ class Parent extends React.Component {
 
 If the ref callback is defined as an inline function, it will get called twice during updates, first with null and then again with the DOM element. This is because a new instance of the function is created with each render, so React needs to clear the old ref and set up the new one. You can avoid this by defining the ref callback as a bound method on the class, but note that it shouldn’t matter in most cases.
 
-### HOC
+## HOC
 used for enhancing the components which are often almost the same (same `handleAdd` or `handleChange` function)
 ```JSX
 // This function takes a component...
@@ -109,12 +109,12 @@ function withSubscription(WrappedComponent, selectData) {
 }
 ```
 
-### Portals
+## Portals
 - render a child component in some other DOM (useful for abusing the z-index property)
 - [here](https://reactjs.org/docs/portals.html) is a good example of portals with _bubbling_
 
-### Hooks
-#### useEffect
+## Hooks
+### useEffect
 
 [`Object.is`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/is#Description) algorithm used for comparing previous and current `props.source`
 
@@ -140,7 +140,7 @@ If you pass an empty array ([]), the props and state inside the effect will alwa
 
 We recommend using the exhaustive-deps rule as part of our eslint-plugin-react-hooks package. It warns when dependencies are specified incorrectly and suggests a fix.
 
-#### useReducer
+### useReducer
 a bit more optimal `useState` if it requires additional computation or callbacks
 
 ```JSX
@@ -178,7 +178,7 @@ function Counter({initialCount}) {
 }
 ```
 
-#### useCallback
+### useCallback
 returns a memoized function which will change only if one of its dependencies change
 
 ```JSX
@@ -190,17 +190,17 @@ const memoizedCallback = useCallback(
 );
 ```
 
-#### useMemo
+### useMemo
 recomputes the value only if one of the dependencies change
 ```JSX
 const memoizedValue = useMemo(() => computeExpensiveValue(a, b), [a, b]);
 ```
 
-### Useful functions
-##### Component
+## Useful functions
+#### Component
 - `shouldComponentUpdate()` - you can inset some conditions to prevent the component from updating (doesn't propagate to children)
 - `getDerivedStateFromProps()` - if current state is conditional to new prop this might improve performance
-##### ReactDOM
+#### ReactDOM
 - `unmountComponentAtNode()` - remove component from the DOM and clean its state and props
 - [`createPortal()`](#portals)
 
@@ -241,6 +241,3 @@ const memoizedValue = useMemo(() => computeExpensiveValue(a, b), [a, b]);
 -import TextField from '@material-ui/core/TextField';
 +import { Button, TextField } from '@material-ui/core';
 ```
-
-
-
