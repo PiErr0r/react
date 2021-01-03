@@ -41,9 +41,7 @@ const element = React.createElement(
   'Hello, world!'
 );
 ```
-### Code-splitting
-> TODO
-> look a bit more into `React.lazy` loader to see the actua lbenefits and where can we make the user wait for that short time
+
 
 ### RefForwarding
 useful for complicated relations between more components divided by more layers of elements and components:
@@ -89,6 +87,20 @@ function withSubscription(WrappedComponent, selectData) {
   };
 }
 ```
+
+### Portals
+- render a child component in some other DOM (useful for abusing the z-index property)
+- [here](https://reactjs.org/docs/portals.html) is a good example of portals with _bubbling_
+
+
+## Optimization
+### Code-splitting
+> TODO
+> look a bit more into [`React.lazy`](https://reactjs.org/docs/code-splitting.html) loader to see the actua lbenefits and where can we make the user wait for that short time
+
+### Profiler
+> TODO
+> [profiler](https://reactjs.org/docs/profiler.html)
 
 
 ## Accessibility (a11y)
