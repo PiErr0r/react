@@ -1,7 +1,7 @@
 # JS notes
 
 - `super` must be called in a class which extends another class and it calls the parent objects constructor
-- `static` keyword in a class makes the function or property callable only by the class and not by the instances of the class:
+- `static` keyword in a class makes the method callable only by the class and not by the instances of the class:
 ```JS
 class Triple {
   static customName = 'Tripler';

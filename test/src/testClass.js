@@ -1,5 +1,5 @@
 class test {
-	constructor() {
+	constructor(title) {
 
 	}
 

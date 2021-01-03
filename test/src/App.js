@@ -3,6 +3,8 @@ import './App.css';
 import test from './testClass.js';
 
 function App() {
+  const a = new test("brene");
+  
   return (
     <div className="App">
       <header className="App-header">
