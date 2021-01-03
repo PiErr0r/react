@@ -9,7 +9,7 @@
     - custom React components must be **C**apitalized when called as a JSX entity, otherwise interpreter will think it is a HTML element which causes undefined behaviour
 - if you rerender a component only the changed part will rerender, otherwise nothing happens (e.g. if you call setTimeout to render a static element it will not rerender until the function called by setTimeout changes the component [source](https://reactjs.org/docs/rendering-elements.html))
 
-React class component `Comp` lifecycle:
+React class component `Comp` [lifecycle](https://projects.wojtekmaj.pl/react-lifecycle-methods-diagram/):
 1. `<Comp />` is passed to `ReactDOM.render()`
 2. React calls the contructor of `Comp`
 3. `Comp`'s `render()` method is called and `Comp` is inserted in the DOM
@@ -48,6 +48,27 @@ useful for complicated relations between more components divided by more layers 
 - Managing focus, text selection, or media playback.
 - Triggering imperative animations.
 - Integrating with third-party DOM libraries.
+
+it is possible to pass a callback ref function which makes more clear where is ref pointing to
+```JSX
+function CustomTextInput(props) {
+  return (
+    <div>
+      <input ref={props.inputRef} />    </div>
+  );
+}
+
+class Parent extends React.Component {
+  render() {
+    return (
+      <CustomTextInput
+        inputRef={el => this.inputElement = el}      />
+    );
+  }
+}
+```
+
+If the ref callback is defined as an inline function, it will get called twice during updates, first with null and then again with the DOM element. This is because a new instance of the function is created with each render, so React needs to clear the old ref and set up the new one. You can avoid this by defining the ref callback as a bound method on the class, but note that it shouldn’t matter in most cases.
 
 ### HOC
 used for enhancing the components which are often almost the same (same `handleAdd` or `handleChange` function)
@@ -92,16 +113,53 @@ function withSubscription(WrappedComponent, selectData) {
 - render a child component in some other DOM (useful for abusing the z-index property)
 - [here](https://reactjs.org/docs/portals.html) is a good example of portals with _bubbling_
 
+### Hooks
+```JSX
+useEffect(
+  () => {
+    const subscription = props.source.subscribe();
+    return () => {
+      subscription.unsubscribe();
+    };
+  },
+  [props.source],
+);
+```
+#### Note
+If you use this optimization, make sure the array includes all values from the component scope (such as props and state) that change over time and that are used by the effect. Otherwise, your code will reference stale values from previous renders. Learn more about how to deal with functions and what to do when the array values change too often.
+
+If you want to run an effect and clean it up only once (on mount and unmount), you can pass an empty array ([]) as a second argument. This tells React that your effect doesn’t depend on any values from props or state, so it never needs to re-run. This isn’t handled as a special case — it follows directly from how the dependencies array always works.
+
+If you pass an empty array ([]), the props and state inside the effect will always have their initial values. While passing [] as the second argument is closer to the familiar componentDidMount and componentWillUnmount mental model, there are usually better solutions to avoid re-running effects too often. Also, don’t forget that React defers running useEffect until after the browser has painted, so doing extra work is less of a problem.
+
+We recommend using the exhaustive-deps rule as part of our eslint-plugin-react-hooks package. It warns when dependencies are specified incorrectly and suggests a fix.
+
+
+### Useful functions
+##### Component
+- `shouldComponentUpdate()` - you can inset some conditions to prevent the component from updating (doesn't propagate to children)
+- `getDerivedStateFromProps()` - if current state is conditional to new prop this might improve performance
+##### ReactDOM
+- `unmountComponentAtNode()` - remove component from the DOM and clean its state and props
+- [`createPortal()`](#portals)
+
+## Testing
+- [Utils](https://reactjs.org/docs/test-utils.html)
+- [Renders](https://reactjs.org/docs/test-renderer.html)
 
 ## Optimization
 ### Code-splitting
 > TODO
-> look a bit more into [`React.lazy`](https://reactjs.org/docs/code-splitting.html) loader to see the actua lbenefits and where can we make the user wait for that short time
+> look a bit more into [`React.lazy`](https://reactjs.org/docs/code-splitting.html) loader to see the actual benefits and where can we make the user wait for that short time
+> [useful](https://medium.com/hackernoon/lazy-loading-and-preloading-components-in-react-16-6-804de091c82d)
 
 ### Profiler
 > TODO
 > [profiler](https://reactjs.org/docs/profiler.html)
 
+### React.memo
+- HOC => rerender only on prop change (state and context too)
+- accepts custom function which return true/false whether we want to rerender the component or not
 
 ## Accessibility (a11y)
 
