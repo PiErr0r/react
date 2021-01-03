@@ -114,6 +114,10 @@ function withSubscription(WrappedComponent, selectData) {
 - [here](https://reactjs.org/docs/portals.html) is a good example of portals with _bubbling_
 
 ### Hooks
+#### useEffect
+
+[`Object.is`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/is#Description) algorithm used for comparing previous and current `props.source`
+
 ```JSX
 useEffect(
   () => {
@@ -122,10 +126,12 @@ useEffect(
       subscription.unsubscribe();
     };
   },
-  [props.source],
+  [props.source]
 );
 ```
-#### Note
+
+**Note**
+
 If you use this optimization, make sure the array includes all values from the component scope (such as props and state) that change over time and that are used by the effect. Otherwise, your code will reference stale values from previous renders. Learn more about how to deal with functions and what to do when the array values change too often.
 
 If you want to run an effect and clean it up only once (on mount and unmount), you can pass an empty array ([]) as a second argument. This tells React that your effect doesn’t depend on any values from props or state, so it never needs to re-run. This isn’t handled as a special case — it follows directly from how the dependencies array always works.
@@ -134,6 +140,61 @@ If you pass an empty array ([]), the props and state inside the effect will alwa
 
 We recommend using the exhaustive-deps rule as part of our eslint-plugin-react-hooks package. It warns when dependencies are specified incorrectly and suggests a fix.
 
+#### useReducer
+a bit more optimal `useState` if it requires additional computation or callbacks
+
+```JSX
+function init(initialCount) {
+  return {count: initialCount};
+}
+function reducer(state, action) {
+  switch (action.type) {
+    case 'increment':
+      return {count: state.count + 1};
+    case 'decrement':
+      return {count: state.count - 1};
+    case 'reset':
+      return init(action.payload);
+    default:
+      throw new Error();
+  }
+}
+
+function Counter({initialCount}) {
+  // lazy initialization
+  const [state, dispatch] = useReducer(reducer, initialCount, init);
+  return (
+    <>
+      Count: {state.count}
+      <button
+        /* dispatch is stable and doesn't change on rerenders */
+        onClick={() => dispatch({type: 'reset', payload: initialCount})}>
+        Reset
+      </button>
+      <button onClick={() => dispatch({type: 'decrement'})}>-</button>
+      <button onClick={() => dispatch({type: 'increment'})}>+</button>
+    </>
+  );
+}
+```
+
+#### useCallback
+returns a memoized function which will change only if one of its dependencies change
+
+```JSX
+const memoizedCallback = useCallback(
+  () => {
+    doSomething(a, b);
+  },
+  [a, b],
+);
+```
+
+#### useMemo
+recomputes the value only if one of the dependencies change
+```JSX
+const memoizedValue = useMemo(() => computeExpensiveValue(a, b), [a, b]);
+```
 
 ### Useful functions
 ##### Component
@@ -146,6 +207,7 @@ We recommend using the exhaustive-deps rule as part of our eslint-plugin-react-h
 ## Testing
 - [Utils](https://reactjs.org/docs/test-utils.html)
 - [Renders](https://reactjs.org/docs/test-renderer.html)
+- [General](https://reactjs.org/docs/testing.html)
 
 ## Optimization
 ### Code-splitting
@@ -160,6 +222,7 @@ We recommend using the exhaustive-deps rule as part of our eslint-plugin-react-h
 ### React.memo
 - HOC => rerender only on prop change (state and context too)
 - accepts custom function which return true/false whether we want to rerender the component or not
+- [memoization](https://github.com/facebook/react/issues/15156#issuecomment-474590693)
 
 ## Accessibility (a11y)
 
