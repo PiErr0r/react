@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { Fragment, useState, useEffect } from 'react';
 
 const WasmTest = (props) => {
 
 	const [fnc, setFnc] = useState(null);
 	const [test, setTest] = useState(null);
+	const [exes, setExes] = useState(null);
 
 	const all_odd = (n) => {
 		while(n) {
@@ -72,8 +73,17 @@ const WasmTest = (props) => {
         setTest({test:test});
       }
     );
+
+		// loadWebAssembly('math.wasm')
+  //     .then(instance => {
+  //       var exports = instance.exports; // the exports of that instance
+  //       var math = exports; // the "doubler" function (note "_" prefix)
+  //       console.log(exports)
+  //       setExes({x:math});
+  //     }
+  //   );
 	}, []);
-	console.log(test)
+	console.log(exes)
 
 	const tester = (f1, f2) => {
 		let total1 = 0, i;
@@ -109,7 +119,11 @@ const WasmTest = (props) => {
 	}
 
 	//return <button onClick={() => tester(test.test)}>WHAT</button>
-	return <button onClick={() => tester(testJs, test.test)}>WHAT</button>
+	return <Fragment>
+		<button onClick={() => tester(testJs, test.test)}>WHAT</button>
+		<button onClick={() => tester(testJs, test.test)}>Test math</button>
+	</Fragment>
+
 
 }
 
